@@ -1,6 +1,9 @@
 # chorus-downlader
 qurrys all the songs on chours, pulls file size from google and downloads them all
 
+PROOF OF CONCEPT! 
+not working 100%
+
 uses the https://chorus.fightthe.pw/ api to index all the songs into one json file
 
 also pulls file size info from google's api
