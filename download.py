@@ -12,7 +12,7 @@ import wget
 start = 1
 count = requests.get('https://chorus.fightthe.pw/api/count')
 count = str(count.json())
-count = 5800
+# count = 5800
 skip = '0'
 priv = '1'
 file2 = ""

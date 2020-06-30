@@ -15,7 +15,7 @@ import requests
 # get total count, https://chorus.fightthe.pw/api/count
 
 # pages = 1
-start_song = 9139
+start_song = 1
 start_song_page = math.ceil(int(start_song) / 20)
 
 total = 0   
@@ -27,6 +27,19 @@ pages = math.ceil(int(count) / 20)
 SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']
 
 data = {}
+
+def make_json_file():
+    isFile = os.path.isfile("dump.json")
+    if isFile == False:
+        file = open("dump.json", "a")
+        file.write("{}")
+        file.close()
+    isFile = os.path.isfile("data.json")
+    if isFile == False:
+        file = open("data.json", "a")
+        file.write("{}")
+        file.close()
+
 
 def percentage(part, whole):
   return 100 * float(part)/float(whole)
@@ -192,4 +205,5 @@ def main():
         print("---------------")
 
 if __name__ == '__main__':
+    make_json_file()
     main()
