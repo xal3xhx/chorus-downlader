@@ -7,12 +7,15 @@ import glob
 from pyunpack import Archive
 import sys
 import wget
+import io
 
 # start = 560
 start = 1
-count = requests.get('https://chorus.fightthe.pw/api/count')
-count = str(count.json())
+# change out to count the total entries in the data.json
+# count = requests.get('https://chorus.fightthe.pw/api/count')
+# count = str(count.json())
 count = 5800
+
 skip = '0'
 priv = '1'
 file2 = ""
@@ -85,7 +88,17 @@ def type(i):
             else:
                 link = data[i]['files'][file]['link']
                 if file == "archive":
-                    print("skiping archrive")
+                    # print("skiping archive")
+                    log_path = path + "/archive_log.txt"
+                    log = io.open(log_path, "r", encoding="utf-8")
+                    if name not in log.read():
+                        print("downloading archrive: " + name)
+                        with io.open(log_path, "a", encoding="utf-8") as outfile:
+                            outfile.write(name + "\n")
+                        downlaod_archive(name, link, os.getcwd())
+                    else:
+                        print("archrive has already been downloaded.")
+
                     # print("downloading file:    " + name)
                     # downlad_folder(name, link)
                     # downlaod_archive(name, link, str(path+"/songs/"+name))
@@ -102,7 +115,7 @@ def downlaod_archive(name, link, path):
         Archive(file).extractall('.')
         os.remove(file)
     for file in glob.glob("*.rar"):
-        pass
+        print("archrive is a RAR, please run extract_rar.bat")
 
 def downlad_folder(name, link):
     # filename = wget.download(link)
@@ -125,6 +138,18 @@ def main():
             exit(0)
         except:
             print("ERROR on song: " + str(i))
+
+def main_dev():
+    global path
+    global path2
+    global priv
+    for i in range(int(start), int(count)):
+        print("---------")
+        print("Currently working on song number: " + str(i))
+        os.chdir(path)
+        priv = '1'
+        path2 = ""
+        type(str(i))
 
 if __name__ == '__main__':
     # path2 = path+"/songs"
