@@ -14,8 +14,8 @@ import requests
 # get latest with offset, https://chorus.fightthe.pw/api/latest?from=0
 # get total count, https://chorus.fightthe.pw/api/count
 
-# pages = 1
-start_song = 1
+pages = 1
+# start_song = 14931
 start_song_page = math.ceil(int(start_song) / 20)
 
 total = 0   
@@ -27,19 +27,6 @@ pages = math.ceil(int(count) / 20)
 SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']
 
 data = {}
-
-def make_json_file():
-    isFile = os.path.isfile("dump.json")
-    if isFile == False:
-        file = open("dump.json", "a")
-        file.write("{}")
-        file.close()
-    isFile = os.path.isfile("data.json")
-    if isFile == False:
-        file = open("data.json", "a")
-        file.write("{}")
-        file.close()
-
 
 def percentage(part, whole):
   return 100 * float(part)/float(whole)
@@ -151,14 +138,12 @@ def size2():
 
 def main():
     print("starting")
-    # print(size2())
     for x in range(start_song_page, pages):
         
         print()
         print("---------------")
         print("CURRENT PAGE IS: " + str(x))
         global start
-        # global start_song
         if start == 1:
             y = start_song
             start = 0
@@ -180,30 +165,34 @@ def main():
             print("CURRENT SONG IS: " + name)
             print("percentage done is: " + str(round(percentage(offset, count),2)) + "%")
             print("total size so far: " + size2())
-            print("---------------")
-
 
             data = {}
             data[offset] = {}
             data[offset]['name'] = name
             data[offset]['files'] = {}
             for k, v in direct.items():
-                id = dict(parse.parse_qsl(parse.urlsplit(v).query))
-                id = id['id']
-                raw_size = getsize(str(id))
-                if raw_size != 'error': 
-                    size = convert_size(int(raw_size))
+                if "google" in v:
+                    print(v + " IS GOOGLE!")
+                    id = dict(parse.parse_qsl(parse.urlsplit(v).query))
+                    id = id['id']
+                    raw_size = getsize(str(id))
+                    if raw_size != 'error': 
+                        size = convert_size(int(raw_size))
+                    else:
+                        size = raw_size
+                    data[offset]['files'][k] = {}
+                    data[offset]['files'][k]['size'] = size
+                    data[offset]['files'][k]['link'] = v
+                    if size != 'error': 
+                        write_file(data, "dump.json")
+                    else:
+                        data = {}
                 else:
-                    size = raw_size
-                data[offset]['files'][k] = {}
-                data[offset]['files'][k]['size'] = size
-                data[offset]['files'][k]['link'] = v
-            if size != 'error': 
-                write_file(data, "dump.json")
-            else:
-                data = {}
-        print("---------------")
+                    print(v + " IS NOT GOOGLE!")
+                    pass
+            print("---------------")
+
+        
 
 if __name__ == '__main__':
-    make_json_file()
     main()
